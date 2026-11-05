@@ -62,21 +62,19 @@ def bag_of_words(sentence: str, vocabulary: list[str]) -> list[int]:
     counts = Counter(tokens)
     return [counts[t] for t in vocabulary]
 
-# Load the SNLI dataset
-dataset = load_dataset("stanfordnlp/snli")
+def binary_bag_of_words(sentence: str, vocabulary: list[str]) -> list[int]:
+    """
+    Convert a sentence into a binary bag-of-words vector based on the
+    given vocabulary.
 
-# Get the first example from the train partition
-first_example = dataset['train'][0]
+    Args:
+        sentence: The input text string.
+        vocabulary: A list of unique tokens defining the feature space.
 
-# The 'premise' is the first sentence (hypothesis is the second)
-first_sentence = first_example['premise']
+    Returns:
+        A list where index i is 1 if vocabulary[i] appears in the
+        sentence's tokens, and 0 otherwise.
+    """
+    present = set(tokenize_with_vocab(sentence, vocabulary))
+    return [1 if t in present else 0 for t in vocabulary]
 
-# Define a simple vocabulary for testing
-# In practice, you might build this from the entire corpus or use a pre-trained embedding
-vocabulary = list(set(first_sentence.lower().split()))
-
-vector = bag_of_words(first_sentence, vocabulary)
-
-print(f"First Sentence: {first_sentence}")
-print(f"Vocabulary: {vocabulary}")
-print(f"Bag-of-Words Vector: {vector}")
